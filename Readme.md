@@ -118,7 +118,7 @@ Hopefully, the examples illustrate how to use this simple library. The first, `p
 
 # Credits
 
-This an implementation of a debounce algorithm by Jack G. Gannsle described in [A Guide to Debouncing](http://www.eng.utah.edu/~cs5780/debouncing.pdf) (2004-2008). More details are available at [Detecting Multiple Button Clicks in an Arduino Sketch](https://sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.htm).
+This an implementation of a debounce algorithm by Jack G. Gannsle described in [A Guide to Debouncing](http://www.eng.utah.edu/~cs5780/debouncing.pdf) (2004-2008). More details are available at [Detecting Multiple Button Clicks in an Arduino Sketch](https://sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.html).
 
 
 # Licence
