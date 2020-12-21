@@ -6,7 +6,7 @@ button was held down for a long time.
 
 ## Version
 
-The original version of this library was made available elsewhere under the name [mdButton.zip](https:sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.html#downloads). The current version adopted a better name, improved the class constructor to handle active `HIGH` buttons with  internal pull-down resistors if available and added callback functions.
+The original version of this library was made available elsewhere under the name [mdButton.zip](https://sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.html#downloads). The current version adopted a better name, improved the class constructor to handle active `HIGH` buttons with  internal pull-down resistors if available and added callback functions.
 
 ## mdPushButton Class Constructor
 
