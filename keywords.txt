@@ -1,0 +1,13 @@
+mdPushButton	KEYWORD1
+mdPushButton	KEYWORD2
+status	KEYWORD2
+setDebouncePressTime	KEYWORD2
+setDebounceReleaseTime	KEYWORD2
+setMutiClickTime	KEYWORD2
+setHoldTime	KEYWORD2
+setCheckInterval	KEYWORD2
+OnButtonClicked	KEWORD2
+
+DIR_NONE	LITERAL1
+DIR_CW	LITERAL1
+DIR_CCW	LITERAL1
