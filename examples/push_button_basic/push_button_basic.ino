@@ -2,7 +2,8 @@
  * push_button_basic.ino
  * 
  * Example program for the mdPushButton library
- * 
+ * <https://github.com/sigmdel/mdPushButton>
+ *
  */
 
 // SPDX-License-Identifier: 0BSD 
