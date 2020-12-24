@@ -16,6 +16,7 @@
 #include "Arduino.h"
 #include "mdPushButton.h"
 
+#define VERSION 0x000101
 
 // If active = LOW (the default) then the input must be pulled high most of the time
 //   This can be done with the internal pullup (set pullup = true which is also the default value) 

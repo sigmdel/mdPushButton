@@ -23,8 +23,6 @@
 // define this macro to follow push button state
 // #define DEBUG_PUSH_BUTTON  
 
-#define VERSION 0x000101
-
 #define DEFAULT_DEBOUNCE_PRESS_TIME      15  // delay to debounce the make part of the signal
 #define DEFAULT_DEBOUNCE_RELEASE_TIME    30  // delay to debounce the break part of the signal
 #define DEFAULT_MULTI_CLICK_TIME        400  // if 0, does not check for multiple button clicks
