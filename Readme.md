@@ -8,9 +8,16 @@ button was held down for a long time.
 
 The original version of this library was made available elsewhere under 
 the name [mdButton.zip](https://sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.html#downloads). 
-The current version adopted a better name, improved the class 
+Version 0.1.1 (2020-12-04) adopted a better name, improved the class 
 constructor to handle active `HIGH` buttons with  internal 
 pull-down resistors if available and added callback functions.
+
+Version 0.1.2 (2021-01-04) 
+1. Added button release debounce on long button presses.
+2. Removed the `_checkInterval` and `setCheckInterval`. The functionality was not implemented.
+3. Improved the debugging functions in the `mdPushButton` class.
+4. Added the `push_button_tune.ino` sketch.
+
 
 ## mdPushButton Class Constructor
 
@@ -72,22 +79,19 @@ with the function
 
     void setHoldTime(uint16_t value);
    
-The `loop()` function may be executed much more often than 
-necessary to check for button presses. The (approximate) interval
-at which the state of the GPIO pin is checked is set with the 
-function 
-
-    void setCheckInterval(uint16_t value);
-   
+  
 The default for all these time values are as follows:
 
 	#define DEFAULT_DEBOUNCE_PRESS_TIME      15  // delay to debounce the make part of the signal
 	#define DEFAULT_DEBOUNCE_RELEASE_TIME    30  // delay to debounce the break part of the signal
 	#define DEFAULT_MULTI_CLICK_TIME        400  // if 0, does not check for multiple button clicks
 	#define DEFAULT_HOLD_TIME              2000  // minimum time of button press for mdButton.status() to return a -1 (long button press)
-	#define DEFAULT_CHECK_INTERVAL           50  // time between successive polling of the button pin 
 
 Again, all times are in milliseconds.
+
+The physical properties of push buttons can be considerable even when comparing two switches 
+of the same type made by the same producer. The default time values are conservative. Use the 
+`push_button_tune.ino` sketch in the `examples` directory to test other delay values with a given switch.
 
 
 ## Callback Functions
@@ -128,8 +132,15 @@ callback function which will never have to handle a no button pressed
 state. Note that `status()` must nevertheless be called in the 
 sketch `loop()`. 
 
-The third example shows how a single callback can be used with multiple 
-buttons.
+
+The third example, `push_button_callback2.ino` shows how a single callback can 
+be used with multiple buttons.
+
+The `push_button_tune.ino` sketch is used to find the appropriate debounce time
+values and so on for a given switch. Connect the switch to an appropriate micro-controller 
+development board with a supported serial port. Enter `help` in the serial
+monitor for a list of commands.
+
 
 # Credits
 

@@ -27,7 +27,6 @@
 #define DEFAULT_DEBOUNCE_RELEASE_TIME    30  // delay to debounce the break part of the signal
 #define DEFAULT_MULTI_CLICK_TIME        400  // if 0, does not check for multiple button clicks
 #define DEFAULT_HOLD_TIME              2000  // minimum time of button press for mdButton.status() to return a -1 (long button press)
-#define DEFAULT_CHECK_INTERVAL           50  // time between successive polling of the button pin 
                                              // all times in milliseconds
 
 // Callback type of handler such as buttonClicked(int clicks)
