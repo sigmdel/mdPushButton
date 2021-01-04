@@ -20,8 +20,8 @@
 
 #include "Arduino.h"
 
-// define this macro to follow push button state
-// #define DEBUG_PUSH_BUTTON  
+// May need to define this macro in Arduino IDE if a value != 0 is desired
+//#define DEBUG_PUSH_BUTTON  = 0 - no debugging, 1 - printSetup() available, 2 adds state machine debugging
 
 #define DEFAULT_DEBOUNCE_PRESS_TIME      15  // delay to debounce the make part of the signal
 #define DEFAULT_DEBOUNCE_RELEASE_TIME    30  // delay to debounce the break part of the signal
@@ -50,7 +50,6 @@ class mdPushButton {
     uint16_t setDebounceReleaseTime(uint16_t value);
     uint16_t setMultiClickTime(uint16_t value);
     uint16_t setHoldTime(uint16_t value);
-    uint16_t setCheckInterval(uint16_t value);
 
     // status, number of clicks since last update
     // -1 = button held, 0 = button not pressed, 1, 2, ... number of times button pressed
@@ -60,19 +59,24 @@ class mdPushButton {
     void OnButtonClicked(callback_int); // only one push button, or using separate click handlers for each button
     void OnButtonClicked(callback_int_int);  // when using one click handler for more than on push button
 
+    #if (DEBUG_PUSH_BUTTON > 0)
+    void printSetup(void);
   private:
+    uint32_t _mode;
+    #else
+  private:
+    #endif 
     uint8_t _pin;    
-    uint8_t _active;                   
+    uint8_t _active; 
     uint16_t _debouncePressTime   = DEFAULT_DEBOUNCE_PRESS_TIME; 
     uint16_t _debounceReleaseTime = DEFAULT_DEBOUNCE_RELEASE_TIME;
     uint16_t _multiClickTime      = DEFAULT_MULTI_CLICK_TIME;  
     uint16_t _holdTime            = DEFAULT_HOLD_TIME;
-    uint16_t _checkInterval       = DEFAULT_CHECK_INTERVAL;
   
     callback_int _OnClick1;
     callback_int_int _OnClick2;
 
-    // State variables 
+       // State variables 
     unsigned long lastButtonCheck_;
     long _eventTime; 
     enum buttonState_t { AWAIT_PRESS, DEBOUNCE_PRESS, AWAIT_RELEASE, DEBOUNCE_RELEASE, AWAIT_MULTI_PRESS } _buttonState;
@@ -81,8 +85,8 @@ class mdPushButton {
     uint16_t _setAttrib(uint16_t* attrib, uint16_t value);
 
     // Debugging
-    #ifdef DEBUG_PUSH_BUTTON 
-    buttonState_t _lastState = AWAIT_MULTI_PRESS;
+    #if (DEBUG_PUSH_BUTTON > 1)
+;   buttonState_t _lastState = AWAIT_MULTI_PRESS;
     void _debug(char * msg);
     #endif  
 };

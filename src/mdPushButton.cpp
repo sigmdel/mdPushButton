@@ -16,7 +16,7 @@
 #include "Arduino.h"
 #include "mdPushButton.h"
 
-#define VERSION 0x000101
+#define VERSION 0x000102
 
 // If active = LOW (the default) then the input must be pulled high most of the time
 //   This can be done with the internal pullup (set pullup = true which is also the default value) 
@@ -44,6 +44,10 @@ mdPushButton::mdPushButton(uint8_t pin, uint8_t active, bool useInternalPullResi
     }
   }  
 
+  #if (DEBUG_PUSH_BUTTON > 0)
+  _mode = mode;
+  #endif
+
   pinMode(_pin, mode);
   _buttonState = AWAIT_PRESS;
   version = VERSION;
@@ -62,7 +66,6 @@ uint16_t mdPushButton::setDebouncePressTime(uint16_t value) { return _setAttrib(
 uint16_t mdPushButton::setDebounceReleaseTime(uint16_t value) { return _setAttrib(&_debounceReleaseTime, value); }
 uint16_t mdPushButton::setMultiClickTime(uint16_t value){ return _setAttrib(&_multiClickTime, value); }
 uint16_t mdPushButton::setHoldTime(uint16_t value){ return _setAttrib(&_holdTime, value); }
-uint16_t mdPushButton::setCheckInterval(uint16_t value) { return _setAttrib(&_checkInterval, value); }
 
 void mdPushButton::OnButtonClicked( callback_int cb ){_OnClick1 = cb;}
 void mdPushButton::OnButtonClicked( callback_int_int cb ){_OnClick2 = cb;}
@@ -75,29 +78,6 @@ int mdPushButton::status(void) {
   }  
   return stat;
 }  
-
-#ifdef DEBUG_PUSH_BUTTON  
-
-void mdPushButton::_debug(char * msg = NULL) {
-  if (_lastState != _buttonState) {
-    Serial.print("DBG pushButton: _pin ");
-    Serial.print(_pin);
-    Serial.print(" _clicks = ");
-    Serial.print(_clicks);
-    Serial.print(" _buttonState = ");
-    switch(_buttonState) {
-      case AWAIT_PRESS: Serial.print("AWAIT_PRESS"); break;
-      case DEBOUNCE_PRESS: Serial.print("DEBOUNCE_PRESS");  break;
-      case AWAIT_RELEASE: Serial.print("AWAIT_RELEASE");  break; 
-      case DEBOUNCE_RELEASE: Serial.print("DEBOUNCE_RESLEASE");  break;
-      case AWAIT_MULTI_PRESS: Serial.print("AWAIT_MULTI_PRESS");  break;
-      default: Serial.print("*** UNKNOWN ***");
-    };
-    Serial.println(msg);
-  }
-  _lastState = _buttonState;  
-}    
-#endif
 
 int mdPushButton::_update(void) {
   if (_buttonState == AWAIT_PRESS) {
@@ -119,11 +99,7 @@ int mdPushButton::_update(void) {
     //dbg: Serial.printf("%d ", digitalRead(_pin));
     if (!(digitalRead(_pin) == _active)) {
       if ((millis() - _eventTime) > _holdTime) {
-        _buttonState = AWAIT_PRESS;
-        #ifdef DEBUG_PUSH_BUTTON  
-        _debug(" return -1");
-        #endif
-        return -1;
+        _clicks = -1;
       }
       _buttonState = DEBOUNCE_RELEASE;
       _eventTime = millis();
@@ -132,6 +108,13 @@ int mdPushButton::_update(void) {
 
   else if (_buttonState == DEBOUNCE_RELEASE) {
     if ((millis() - _eventTime) > _debounceReleaseTime) { 
+      if (_clicks < 0) {
+        _buttonState = AWAIT_PRESS;
+        #if (DEBUG_PUSH_BUTTON  > 1)
+        _debug(" return -1");
+        #endif
+        return -1;
+      }  
       _clicks += 1;
       _buttonState = AWAIT_MULTI_PRESS;
       _eventTime = millis(); 
@@ -145,15 +128,71 @@ int mdPushButton::_update(void) {
     } 
     else if ((millis() - _eventTime) > _multiClickTime) {
       _buttonState = AWAIT_PRESS;
-        #ifdef DEBUG_PUSH_BUTTON  
+        #if (DEBUG_PUSH_BUTTON  > 1)
         _debug(" return _clicks");
         #endif
       return _clicks;
     } 
   }
-  #ifdef DEBUG_PUSH_BUTTON  
+  #if (DEBUG_PUSH_BUTTON > 1)
   _debug(" return 0");
   #endif  
   return 0; 
 }
+
+#if (DEBUG_PUSH_BUTTON > 0)
+
+void mdPushButton::printSetup(void) {
+  Serial.print("mdPushButton library version ");
+  Serial.print(version >> 16);
+  Serial.print(".");
+  Serial.print(version >> 8 & 0xFF);
+  Serial.print(".");
+  Serial.println(version & 0xFF);
+  Serial.print("Button pin number ");
+  Serial.print(_pin);
+  Serial.print(", active ");
+  Serial.print((_active == HIGH) ? "HIGH" : "LOW");
+  Serial.print(", mode ");
+  switch(_mode) {
+    case INPUT: Serial.println("INPUT"); break;
+    #if defined(INPUT_PULLDOWN) 
+    case INPUT_PULLDOWN: Serial.println("INPUT_PULLDOWN"); break;
+    #endif
+    #if defined(INPUT_PULLDOWN) 
+    case INPUT_PULLDOWN: Serial.println("INPUT_PULLDOWN"); break;
+    #endif
+    #if defined(ESP8266)   
+    case INPUT_PULLDOWN_16: Serial.println("INPUT_PULLDOWN_16"); break;
+    #endif
+    case INPUT_PULLUP: Serial.println("INPUT_PULLUP"); break;
+    case OUTPUT: Serial.println("OUTPUT"); break;
+    default: Serial.print("Unknown #"); Serial.println(_mode); break;
+  }
+}
+
+#if (DEBUG_PUSH_BUTTON > 1)
+
+void mdPushButton::_debug(char * msg = NULL) {
+  if (_lastState != _buttonState) {
+    Serial.print("DBG pushButton: _pin ");
+    Serial.print(_pin);
+    Serial.print(" _clicks = ");
+    Serial.print(_clicks);
+    Serial.print(" _buttonState = ");
+    switch(_buttonState) {
+      case AWAIT_PRESS: Serial.print("AWAIT_PRESS"); break;
+      case DEBOUNCE_PRESS: Serial.print("DEBOUNCE_PRESS");  break;
+      case AWAIT_RELEASE: Serial.print("AWAIT_RELEASE");  break; 
+      case DEBOUNCE_RELEASE: Serial.print("DEBOUNCE_RESLEASE");  break;
+      case AWAIT_MULTI_PRESS: Serial.print("AWAIT_MULTI_PRESS");  break;
+      default: Serial.print("*** UNKNOWN ***");
+    };
+    Serial.println(msg);
+  }
+  _lastState = _buttonState;  
+}    
+
+#endif
+#endif
 
