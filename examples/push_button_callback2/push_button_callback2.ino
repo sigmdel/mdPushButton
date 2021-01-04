@@ -7,15 +7,12 @@
  */
 
 // SPDX-License-Identifier: 0BSD 
- 
+
 #include <Arduino.h>           // for PlatformIO
 #include "mdPushButton.h"
 
-// Set the following macros to correspond to the
-// connections with the board. 
-//
-// In PlatformIO, the macros can be defined in the 
-// platformio.ini configuration file 
+// Set the following macros if needed. In PlatformIO, the
+// macros can be defined in the platformio.ini configuration file 
 
 #ifndef SERIAL_BAUD
   #define SERIAL_BAUD 9600
@@ -37,9 +34,14 @@
 
 // Assuming the buttons are all active HIGH or all active LOW
 #ifndef ACTIVE
-  #define ACTIVE == LOW
+  #define ACTIVE LOW
 #endif
 
+#ifndef DEBUG_PUSH_BUTTON
+  #define DEBUG_PUSH_BUTTON 0 
+  // 0 - no debug, 1 - printSetup() available, 2 - adds state machine debug output 
+  // Arduino IDE: it will be necessary to add this define in mdPushButton.h if not set to 0
+#endif 
 
 // ---------------------------------------------------
 
@@ -50,8 +52,8 @@
   //           __||__       |
   // Vcc ------o    o--+---=|BUTTON_PIN (GPIO)
   //                   |    |________________
-  //                   |   ____
-  //                   +--[____]---GND   (external pull-down resistor)
+  //         ____      |   
+  // GND ---[____]-----+  External pull-down resistor (optional in some cases)
   //              
   // If there's no external pull-down resistor, set useInternalPullResistor to true
   // Many micro-controllers do not have internal pull-down resistors 
@@ -66,8 +68,8 @@
   //           __||__       |
   // GND ------o    o--+---=|BUTTON_PIN (GPIO)
   //                   |    |________________
-  //                   |   ____
-  //                   +--[____]---Vcc   (external pull-up resistor)
+  //         ____      |   
+  // Vcc ---[____]-----+  External pull-up resistor (optional in most cases)
   //              
   // If there's no external pull-up resistor, set useInternalPullResistor to true
   // Most micro-controlers have internal pull-up resistors
@@ -97,13 +99,18 @@ void setup() {
   Serial.begin(SERIAL_BAUD);
   while (!Serial) delay(10);
   #if defined(ESP8266)
-    Serial.println("\n\n"); 
+    Serial.println("\n"); // skip boot garbage
   #endif   
+
+  Serial.println("\nsetup() starting...");
+
   // four buttons with common button handler
   buttonLeft.OnButtonClicked(ButtonPressed);
   buttonRight.OnButtonClicked(ButtonPressed);
   buttonUp.OnButtonClicked(ButtonPressed);
   buttonDown.OnButtonClicked(ButtonPressed);
+
+  Serial.println("setup() completed.");
 }
 
 void loop() {
@@ -111,4 +118,5 @@ void loop() {
   buttonRight.status();
   buttonUp.status();
   buttonDown.status();
+  delay(40 + random(21)); // rest of loop takes 40 to 60 ms to execute 
 }
