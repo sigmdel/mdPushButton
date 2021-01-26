@@ -4,20 +4,10 @@ An [Arduino](https://www.arduino.cc/) library capable of returning the number of
 presses of a push button made in quick succession or reporting if the 
 button was held down for a long time.
 
-## Version
+## Original Version
 
 The original version of this library was made available elsewhere under 
 the name [mdButton.zip](https://sigmdel.ca/michel/program/esp8266/arduino/switch_debouncing_en.html#downloads). 
-Version 0.1.1 (2020-12-04) adopted a better name, improved the class 
-constructor to handle active `HIGH` buttons with  internal 
-pull-down resistors if available and added callback functions.
-
-Version 0.1.2 (2021-01-04) 
-1. Added button release debounce on long button presses.
-2. Removed the `_checkInterval` and `setCheckInterval`. The functionality was not implemented.
-3. Improved the debugging functions in the `mdPushButton` class.
-4. Added the `push_button_tune.ino` sketch.
-
 
 ## mdPushButton Class Constructor
 

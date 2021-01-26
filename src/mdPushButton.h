@@ -18,10 +18,12 @@
 #ifndef MDPUSHBUTTON_H
 #define MDPUSHBUTTON_H
 
-#include "Arduino.h"
+#include "Arduino.h"  // needed for platformIO
 
 // May need to define this macro in Arduino IDE if a value != 0 is desired
-//#define DEBUG_PUSH_BUTTON  = 0 - no debugging, 1 - printSetup() available, 2 adds state machine debugging
+#ifndef DEBUG_PUSH_BUTTON
+#define DEBUG_PUSH_BUTTON 0  // 0 - no debugging, 1 - printSetup() available, 2 adds state machine debugging
+#endif
 
 #define DEFAULT_DEBOUNCE_PRESS_TIME      15  // delay to debounce the make part of the signal
 #define DEFAULT_DEBOUNCE_RELEASE_TIME    30  // delay to debounce the break part of the signal

@@ -4,5 +4,4 @@ setDebouncePressTime	KEYWORD2
 setDebounceReleaseTime	KEYWORD2
 setMutiClickTime	KEYWORD2
 setHoldTime	KEYWORD2
-setCheckInterval	KEYWORD2
 OnButtonClicked	KEWORD2
